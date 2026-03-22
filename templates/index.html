@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIPHER — MALWARE CLASSIFIER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="scanline"></div>
+
+<nav>
+  <div class="nav-logo">
+    <span class="logo-box"></span>
+    <span class="logo-text">CIPHER</span>
+  </div>
+  <div class="nav-links">
+    <a href="#" class="nav-link">ABOUT</a>
+    <a href="#" class="nav-link">SOLUTIONS</a>
+    <a href="#" class="nav-link">FAMILIES</a>
+    <a href="#" class="nav-btn">ANALYZE FILE</a>
+  </div>
+  <div class="nav-status" id="navStatus">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText">CONNECTING...</span>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">// STATIC ANALYSIS ENGINE v1.0</div>
+    <h1 class="hero-title">
+      NO BREACH<br>
+      <span class="hero-accent">GOES</span><br>
+      UNDETECTED.
+    </h1>
+    <p class="hero-sub">WE CLASSIFY MALWARE FAMILIES FROM RAW BINARY STRUCTURE.<br>ENTROPY. HEADERS. BYTE PATTERNS. NO EXECUTION REQUIRED.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('analyzerSection').scrollIntoView({behavior:'smooth'})">ANALYZE FILE</button>
+      <button class="btn-secondary" onclick="document.getElementById('familiesSection').scrollIntoView({behavior:'smooth'})">VIEW FAMILIES</button>
+    </div>
+  </div>
+  <div class="hero-globe">
+    <canvas id="globeCanvas"></canvas>
+  </div>
+</section>
+
+<section class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-num" data-target="9">0</span>
+    <span class="stat-label">MALWARE FAMILIES</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-num" data-target="280">0</span>
+    <span class="stat-label">FEATURES EXTRACTED</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-num" data-target="97">0</span><span class="stat-suffix">%</span>
+    <span class="stat-label">MODEL ACCURACY</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-num" data-target="6000">0</span>
+    <span class="stat-label">TRAINING SAMPLES</span>
+  </div>
+</section>
+
+<section class="analyzer-section" id="analyzerSection">
+  <div class="section-header">
+    <div class="section-tag">// CORE FUNCTION</div>
+    <h2 class="section-title">CLASSIFY.<br>IDENTIFY.<br>NEUTRALIZE.</h2>
+  </div>
+
+  <div class="analyzer-container">
+    <div class="upload-panel" id="uploadPanel">
+      <div class="upload-zone" id="dropZone">
+        <div class="upload-icon">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="8" width="48" height="48" rx="2" stroke="currentColor" stroke-width="2"/>
+            <path d="M32 20V44M22 30L32 20L42 30" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+            <path d="M20 44H44" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="upload-text">DROP FILE FOR ANALYSIS</div>
+        <div class="upload-sub">EXE · DLL · BIN · ANY BINARY</div>
+        <button class="btn-upload" onclick="document.getElementById('fileInput').click()">SELECT FILE</button>
+        <input type="file" id="fileInput" hidden>
+      </div>
+
+      <div class="file-info hidden" id="fileInfo">
+        <div class="file-info-row">
+          <span class="fi-label">FILE</span>
+          <span class="fi-val" id="fiName">—</span>
+        </div>
+        <div class="file-info-row">
+          <span class="fi-label">SIZE</span>
+          <span class="fi-val" id="fiSize">—</span>
+        </div>
+        <div class="file-info-row">
+          <span class="fi-label">TYPE</span>
+          <span class="fi-val" id="fiType">—</span>
+        </div>
+        <button class="btn-analyze" id="analyzeBtn">RUN ANALYSIS</button>
+        <button class="btn-clear" id="clearBtn">CLEAR</button>
+      </div>
+    </div>
+
+    <div class="results-panel" id="resultsPanel">
+      <div class="results-placeholder" id="resultsPlaceholder">
+        <div class="placeholder-grid">
+          <div class="pg-line" style="animation-delay:0s"></div>
+          <div class="pg-line" style="animation-delay:0.1s"></div>
+          <div class="pg-line" style="animation-delay:0.2s"></div>
+          <div class="pg-line" style="animation-delay:0.3s"></div>
+          <div class="pg-line" style="animation-delay:0.4s"></div>
+          <div class="pg-line" style="animation-delay:0.5s"></div>
+          <div class="pg-line" style="animation-delay:0.6s"></div>
+          <div class="pg-line" style="animation-delay:0.7s"></div>
+        </div>
+        <div class="placeholder-text">AWAITING FILE INPUT</div>
+      </div>
+
+      <div class="loading-state hidden" id="loadingState">
+        <div class="loader-box">
+          <div class="loader-ring"></div>
+          <div class="loader-text">SCANNING</div>
+        </div>
+        <div class="loader-steps">
+          <div class="ls-step active" id="ls1">PARSING FILE STRUCTURE</div>
+          <div class="ls-step" id="ls2">EXTRACTING BYTE FEATURES</div>
+          <div class="ls-step" id="ls3">ENTROPY ANALYSIS</div>
+          <div class="ls-step" id="ls4">PATTERN MATCHING</div>
+          <div class="ls-step" id="ls5">CLASSIFYING FAMILY</div>
+        </div>
+      </div>
+
+      <div class="results-content hidden" id="resultsContent">
+        <div class="result-header">
+          <div class="threat-badge" id="threatBadge">
+            <span class="threat-level" id="threatLevel">—</span>
+          </div>
+          <div class="result-family">
+            <div class="rf-label">DETECTED FAMILY</div>
+            <div class="rf-name" id="rfName">—</div>
+          </div>
+          <div class="result-conf">
+            <div class="rc-label">CONFIDENCE</div>
+            <div class="rc-value" id="rcValue">—</div>
+          </div>
+        </div>
+
+        <div class="result-grid">
+          <div class="rg-card">
+            <div class="rg-label">SHA-256</div>
+            <div class="rg-val mono small" id="rgHash">—</div>
+          </div>
+          <div class="rg-card">
+            <div class="rg-label">FILE SIZE</div>
+            <div class="rg-val" id="rgSize">—</div>
+          </div>
+          <div class="rg-card">
+            <div class="rg-label">FILE TYPE</div>
+            <div class="rg-val" id="rgType">—</div>
+          </div>
+          <div class="rg-card">
+            <div class="rg-label">ENTROPY</div>
+            <div class="rg-val" id="rgEntropy">—</div>
+          </div>
+        </div>
+
+        <div class="chart-section">
+          <div class="cs-title">FAMILY PROBABILITY DISTRIBUTION</div>
+          <div class="prob-bars" id="probBars"></div>
+        </div>
+
+        <div class="chart-section">
+          <div class="cs-title">BYTE ENTROPY HEATMAP (16 CHUNKS)</div>
+          <div class="entropy-heatmap" id="entropyHeatmap"></div>
+        </div>
+
+        <div class="chart-section">
+          <div class="cs-title">BYTE FREQUENCY HISTOGRAM</div>
+          <canvas id="histogramCanvas" height="120"></canvas>
+        </div>
+
+        <div class="suspicious-section" id="suspiciousSection">
+          <div class="cs-title">SUSPICIOUS INDICATORS</div>
+          <div class="susp-tags" id="suspTags"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="families-section" id="familiesSection">
+  <div class="section-tag">// THREAT INTELLIGENCE</div>
+  <h2 class="section-title-sm">KNOWN MALWARE FAMILIES</h2>
+  <div class="families-grid" id="familiesGrid"></div>
+</section>
+
+<footer>
+  <div class="footer-logo">
+    <span class="logo-box"></span>
+    <span class="logo-text">CIPHER</span>
+  </div>
+  <div class="footer-text">MALWARE STATIC ANALYSIS ENGINE — BUILT WITH PYTHON + RANDOM FOREST</div>
+  <div class="footer-copy">NO BREACHES. ONLY BOLD MOVES.</div>
+</footer>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>
